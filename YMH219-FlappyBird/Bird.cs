@@ -28,6 +28,21 @@ namespace YMH219_FlappyBird
             Y += velocity;
         }
 
+        // Kuşun tavandan ve zeminden dışarı çıkmasını engeller
+        public void KeepInside(int ceiling, int ground)
+        {
+            if (Y < ceiling)
+            {
+                Y = ceiling;
+                velocity = 0;
+            }
+            if (Y + Size > ground)
+            {
+                Y = ground - Size;
+                velocity = 0;
+            }
+        }
+
         // Space tuşuna basılınca kuş yukarı doğru hız kazanır
         public void Jump()
         {

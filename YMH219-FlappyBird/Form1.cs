@@ -8,6 +8,7 @@ namespace YMH219_FlappyBird
     {
         private Timer gameTimer;
         private Bird bird;
+        private const int GroundHeight = 80;   // Zemin yüksekliği
 
         public Form1()
         {
@@ -29,6 +30,7 @@ namespace YMH219_FlappyBird
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             bird.Update();
+            bird.KeepInside(0, ClientSize.Height - GroundHeight);
             Invalidate();
         }
 
@@ -43,6 +45,11 @@ namespace YMH219_FlappyBird
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            // Zemin
+            int groundY = ClientSize.Height - GroundHeight;
+            e.Graphics.FillRectangle(Brushes.SandyBrown, 0, groundY, ClientSize.Width, GroundHeight);
+            e.Graphics.DrawLine(Pens.DarkGreen, 0, groundY, ClientSize.Width, groundY);
+
             bird.Draw(e.Graphics);
         }
     }
