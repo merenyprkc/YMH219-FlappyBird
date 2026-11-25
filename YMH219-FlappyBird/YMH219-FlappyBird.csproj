@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bird.cs" />
+    <Compile Include="Pipe.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
