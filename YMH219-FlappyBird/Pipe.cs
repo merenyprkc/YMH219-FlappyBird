@@ -42,6 +42,14 @@ namespace YMH219_FlappyBird
             return X + Width < 0;
         }
 
+        // Kuş üst veya alt boruya değiyor mu?
+        public bool Collides(RectangleF birdBounds)
+        {
+            RectangleF top = new RectangleF(X, 0, Width, GapY);
+            RectangleF bottom = new RectangleF(X, GapY + GapHeight, Width, groundY - GapY - GapHeight);
+            return top.IntersectsWith(birdBounds) || bottom.IntersectsWith(birdBounds);
+        }
+
         public void Draw(Graphics g)
         {
             // Üst boru

@@ -46,6 +46,7 @@ namespace YMH219_FlappyBird
             bird.Update();
             bird.KeepInside(0, ClientSize.Height - GroundHeight);
             MovePipes();
+            CheckCollision();
             Invalidate();
         }
 
@@ -68,6 +69,24 @@ namespace YMH219_FlappyBird
                     }
                     pipe.Reset(rightMost + PipeSpacing);
                 }
+            }
+        }
+
+        // Kuş boruya veya zemine çarptıysa oyunu durdurur
+        private void CheckCollision()
+        {
+            int groundY = ClientSize.Height - GroundHeight;
+            bool hitGround = bird.Y + bird.Size >= groundY;
+
+            bool hitPipe = false;
+            foreach (Pipe pipe in pipes)
+            {
+                if (pipe.Collides(bird.Bounds)) hitPipe = true;
+            }
+
+            if (hitGround || hitPipe)
+            {
+                gameTimer.Stop();
             }
         }
 

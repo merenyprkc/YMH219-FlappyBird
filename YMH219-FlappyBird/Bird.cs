@@ -49,6 +49,12 @@ namespace YMH219_FlappyBird
             velocity = JumpSpeed;
         }
 
+        // Çarpışma kontrolü için kuşun kapladığı alan
+        public RectangleF Bounds
+        {
+            get { return new RectangleF(X, Y, Size, Size); }
+        }
+
         // Kuşu sarı bir daire olarak çizer
         public void Draw(Graphics g)
         {
