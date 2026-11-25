@@ -13,6 +13,7 @@ namespace YMH219_FlappyBird
         private Random random = new Random();
         private Label scoreLabel;
         private int score = 0;
+        private bool gameOver = false;
 
         private const int GroundHeight = 80;   // Zemin yüksekliği
         private const int PipeCount = 3;       // Aynı anda dolaşan engel sayısı
@@ -113,14 +114,16 @@ namespace YMH219_FlappyBird
 
             if (hitGround || hitPipe)
             {
+                gameOver = true;
                 gameTimer.Stop();
+                Invalidate();
             }
         }
 
         // Space tuşu ile zıplama
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Space)
+            if (e.KeyCode == Keys.Space && !gameOver)
             {
                 bird.Jump();
             }
@@ -139,6 +142,19 @@ namespace YMH219_FlappyBird
             e.Graphics.DrawLine(Pens.DarkGreen, 0, groundY, ClientSize.Width, groundY);
 
             bird.Draw(e.Graphics);
+
+            // Oyun bittiyse ekrana yazı yaz
+            if (gameOver)
+            {
+                using (Font font = new Font("Arial", 36, FontStyle.Bold))
+                {
+                    StringFormat format = new StringFormat();
+                    format.Alignment = StringAlignment.Center;
+                    format.LineAlignment = StringAlignment.Center;
+                    RectangleF area = new RectangleF(0, 0, ClientSize.Width, ClientSize.Height);
+                    e.Graphics.DrawString("OYUN BİTTİ", font, Brushes.Red, area, format);
+                }
+            }
         }
     }
 }
