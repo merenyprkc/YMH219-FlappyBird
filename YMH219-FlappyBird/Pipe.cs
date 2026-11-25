@@ -15,6 +15,7 @@ namespace YMH219_FlappyBird
 
         public float X { get; private set; }
         public int GapY { get; private set; }    // Boşluğun üst kenarı
+        public bool Passed { get; set; }         // Kuş bu engeli geçti ve skor verildi mi?
 
         public Pipe(float x, int groundY, Random random)
         {
@@ -27,6 +28,7 @@ namespace YMH219_FlappyBird
         public void Reset(float x)
         {
             X = x;
+            Passed = false;
             GapY = random.Next(MinTop, groundY - GapHeight - MinTop);
         }
 

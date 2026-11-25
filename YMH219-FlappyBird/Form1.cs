@@ -11,6 +11,8 @@ namespace YMH219_FlappyBird
         private Bird bird;
         private List<Pipe> pipes = new List<Pipe>();
         private Random random = new Random();
+        private Label scoreLabel;
+        private int score = 0;
 
         private const int GroundHeight = 80;   // Zemin yüksekliği
         private const int PipeCount = 3;       // Aynı anda dolaşan engel sayısı
@@ -31,6 +33,16 @@ namespace YMH219_FlappyBird
             }
 
             // Oyun döngüsü: yaklaşık 60 FPS
+            // Skor etiketi
+            scoreLabel = new Label();
+            scoreLabel.AutoSize = true;
+            scoreLabel.BackColor = Color.Transparent;
+            scoreLabel.Font = new Font("Arial", 28, FontStyle.Bold);
+            scoreLabel.ForeColor = Color.White;
+            scoreLabel.Location = new Point(10, 10);
+            scoreLabel.Text = "0";
+            Controls.Add(scoreLabel);
+
             gameTimer = new Timer();
             gameTimer.Interval = 16;
             gameTimer.Tick += GameTimer_Tick;
@@ -47,6 +59,7 @@ namespace YMH219_FlappyBird
             bird.KeepInside(0, ClientSize.Height - GroundHeight);
             MovePipes();
             CheckCollision();
+            UpdateScore();
             Invalidate();
         }
 
@@ -68,6 +81,20 @@ namespace YMH219_FlappyBird
                         if (p.X > rightMost) rightMost = p.X;
                     }
                     pipe.Reset(rightMost + PipeSpacing);
+                }
+            }
+        }
+
+        // Kuş bir engelin önünden geçtiyse skor 1 artar
+        private void UpdateScore()
+        {
+            foreach (Pipe pipe in pipes)
+            {
+                if (!pipe.Passed && pipe.X + Pipe.Width < bird.X)
+                {
+                    pipe.Passed = true;
+                    score++;
+                    scoreLabel.Text = score.ToString();
                 }
             }
         }
