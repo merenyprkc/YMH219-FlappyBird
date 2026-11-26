@@ -13,6 +13,8 @@ namespace YMH219_FlappyBird
         private Random random = new Random();
         private Label scoreLabel;
         private Label levelLabel;
+        private Label highScoreLabel;
+        private int highScore = 0;
         private int score = 0;
         private bool gameOver = false;
 
@@ -40,6 +42,9 @@ namespace YMH219_FlappyBird
             // Skor ve seviye etiketleri
             scoreLabel = CreateLabel(10, 10, 22);
             levelLabel = CreateLabel(10, 50, 14);
+            highScoreLabel = CreateLabel(10, 75, 14);
+
+            highScore = HighScore.Load();
 
             // Oyun döngüsü: yaklaşık 60 FPS
             gameTimer = new Timer();
@@ -70,6 +75,7 @@ namespace YMH219_FlappyBird
         {
             scoreLabel.Text = "Skor: " + score;
             levelLabel.Text = "Seviye: " + (score / LevelScore + 1);
+            highScoreLabel.Text = "En yüksek: " + highScore;
         }
 
         // Oyunu başa sarar: kuş, engeller, skor ve durum sıfırlanır
@@ -97,6 +103,7 @@ namespace YMH219_FlappyBird
             bird.KeepInside(0, ClientSize.Height - GroundHeight);
             MovePipes();
             CheckCollision();
+            if (gameOver) return;
             UpdateScore();
             Invalidate();
         }
@@ -155,6 +162,15 @@ namespace YMH219_FlappyBird
             if (hitGround || hitPipe)
             {
                 gameOver = true;
+
+                // Yeni rekor varsa kaydet
+                if (score > highScore)
+                {
+                    highScore = score;
+                    HighScore.Save(highScore);
+                    UpdateLabels();
+                }
+
                 gameTimer.Stop();
                 Invalidate();
             }
