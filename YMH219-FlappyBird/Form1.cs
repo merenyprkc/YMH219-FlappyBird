@@ -12,13 +12,17 @@ namespace YMH219_FlappyBird
         private List<Pipe> pipes = new List<Pipe>();
         private Random random = new Random();
         private Label scoreLabel;
+        private Label levelLabel;
         private int score = 0;
         private bool gameOver = false;
 
         private const int GroundHeight = 80;   // Zemin yüksekliği
         private const int PipeCount = 3;       // Aynı anda dolaşan engel sayısı
         private const int PipeSpacing = 220;   // Engeller arası yatay mesafe
-        private const float PipeSpeed = 3f;    // Engellerin sola hız değeri
+        private const float StartSpeed = 3f;   // Başlangıç engel hızı
+        private const float MaxSpeed = 7f;     // En yüksek engel hızı
+        private const int LevelScore = 5;      // Kaç skorda bir seviye atlanır
+        private float pipeSpeed = StartSpeed;  // Şu anki engel hızı
 
         public Form1()
         {
@@ -33,15 +37,9 @@ namespace YMH219_FlappyBird
                 pipes.Add(new Pipe(ClientSize.Width + i * PipeSpacing, groundY, random));
             }
 
-            // Skor etiketi
-            scoreLabel = new Label();
-            scoreLabel.AutoSize = true;
-            scoreLabel.BackColor = Color.Transparent;
-            scoreLabel.Font = new Font("Arial", 28, FontStyle.Bold);
-            scoreLabel.ForeColor = Color.White;
-            scoreLabel.Location = new Point(10, 10);
-            scoreLabel.Text = "0";
-            Controls.Add(scoreLabel);
+            // Skor ve seviye etiketleri
+            scoreLabel = CreateLabel(10, 10, 22);
+            levelLabel = CreateLabel(10, 50, 14);
 
             // Oyun döngüsü: yaklaşık 60 FPS
             gameTimer = new Timer();
@@ -52,6 +50,26 @@ namespace YMH219_FlappyBird
             Paint += Form1_Paint;
 
             StartGame();
+        }
+
+        // Ekranda kullanılacak şeffaf etiketi oluşturur
+        private Label CreateLabel(int x, int y, int fontSize)
+        {
+            Label label = new Label();
+            label.AutoSize = true;
+            label.BackColor = Color.Transparent;
+            label.Font = new Font("Arial", fontSize, FontStyle.Bold);
+            label.ForeColor = Color.White;
+            label.Location = new Point(x, y);
+            Controls.Add(label);
+            return label;
+        }
+
+        // Skor ve seviye etiketlerini günceller
+        private void UpdateLabels()
+        {
+            scoreLabel.Text = "Skor: " + score;
+            levelLabel.Text = "Seviye: " + (score / LevelScore + 1);
         }
 
         // Oyunu başa sarar: kuş, engeller, skor ve durum sıfırlanır
@@ -65,7 +83,8 @@ namespace YMH219_FlappyBird
             }
 
             score = 0;
-            scoreLabel.Text = "0";
+            pipeSpeed = StartSpeed;
+            UpdateLabels();
             gameOver = false;
             gameTimer.Start();
             Invalidate();
@@ -87,7 +106,7 @@ namespace YMH219_FlappyBird
         {
             foreach (Pipe pipe in pipes)
             {
-                pipe.Update(PipeSpeed);
+                pipe.Update(pipeSpeed);
             }
 
             foreach (Pipe pipe in pipes)
@@ -113,7 +132,10 @@ namespace YMH219_FlappyBird
                 {
                     pipe.Passed = true;
                     score++;
-                    scoreLabel.Text = score.ToString();
+                    UpdateLabels();
+
+                    // Her seviyede engeller biraz daha hızlanır
+                    pipeSpeed = Math.Min(MaxSpeed, StartSpeed + (score / LevelScore) * 0.5f);
                 }
             }
         }
