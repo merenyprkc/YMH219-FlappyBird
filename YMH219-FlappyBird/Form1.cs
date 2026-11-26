@@ -26,14 +26,13 @@ namespace YMH219_FlappyBird
 
             bird = new Bird(100, ClientSize.Height / 2, 34);
 
-            // Engelleri sağ kenardan başlayarak aralıklı yerleştir
+            // Engelleri oluştur, konumları StartGame içinde ayarlanır
             int groundY = ClientSize.Height - GroundHeight;
             for (int i = 0; i < PipeCount; i++)
             {
                 pipes.Add(new Pipe(ClientSize.Width + i * PipeSpacing, groundY, random));
             }
 
-            // Oyun döngüsü: yaklaşık 60 FPS
             // Skor etiketi
             scoreLabel = new Label();
             scoreLabel.AutoSize = true;
@@ -44,13 +43,32 @@ namespace YMH219_FlappyBird
             scoreLabel.Text = "0";
             Controls.Add(scoreLabel);
 
+            // Oyun döngüsü: yaklaşık 60 FPS
             gameTimer = new Timer();
             gameTimer.Interval = 16;
             gameTimer.Tick += GameTimer_Tick;
-            gameTimer.Start();
 
             KeyDown += Form1_KeyDown;
             Paint += Form1_Paint;
+
+            StartGame();
+        }
+
+        // Oyunu başa sarar: kuş, engeller, skor ve durum sıfırlanır
+        private void StartGame()
+        {
+            bird.Reset(100, ClientSize.Height / 2);
+
+            for (int i = 0; i < pipes.Count; i++)
+            {
+                pipes[i].Reset(ClientSize.Width + i * PipeSpacing);
+            }
+
+            score = 0;
+            scoreLabel.Text = "0";
+            gameOver = false;
+            gameTimer.Start();
+            Invalidate();
         }
 
         // Her tick'te kuş ve engeller güncellenir, ekran yeniden çizilir
@@ -127,6 +145,10 @@ namespace YMH219_FlappyBird
             {
                 bird.Jump();
             }
+            else if (e.KeyCode == Keys.R && gameOver)
+            {
+                StartGame();
+            }
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -146,13 +168,13 @@ namespace YMH219_FlappyBird
             // Oyun bittiyse ekrana yazı yaz
             if (gameOver)
             {
-                using (Font font = new Font("Arial", 36, FontStyle.Bold))
+                using (Font font = new Font("Arial", 22, FontStyle.Bold))
                 {
                     StringFormat format = new StringFormat();
                     format.Alignment = StringAlignment.Center;
                     format.LineAlignment = StringAlignment.Center;
                     RectangleF area = new RectangleF(0, 0, ClientSize.Width, ClientSize.Height);
-                    e.Graphics.DrawString("OYUN BİTTİ", font, Brushes.Red, area, format);
+                    e.Graphics.DrawString("OYUN BİTTİ\nYeniden başlamak için R", font, Brushes.Red, area, format);
                 }
             }
         }

@@ -49,6 +49,14 @@ namespace YMH219_FlappyBird
             velocity = JumpSpeed;
         }
 
+        // Kuşu başlangıç konumuna ve sıfır hıza döndürür
+        public void Reset(float x, float y)
+        {
+            X = x;
+            Y = y;
+            velocity = 0;
+        }
+
         // Çarpışma kontrolü için kuşun kapladığı alan
         public RectangleF Bounds
         {
