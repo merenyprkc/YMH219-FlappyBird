@@ -2,9 +2,9 @@
 
 Windows Forms ile yapılmış Flappy Bird benzeri bir oyun. YMH219 Nesne Tabanlı Programlama dersi ödevi olarak hazırlanmıştır.
 
-**Ad Soyad:** ........................................
+**Ad Soyad:** Muhammed Eren Yaprakcı
 
-**Öğrenci No:** ........................................
+**Öğrenci No:** 250542006
 
 ## Proje Amacı
 
